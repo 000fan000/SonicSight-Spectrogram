@@ -1,5 +1,6 @@
 
 export type ColorScheme = 'magma' | 'viridis' | 'inferno' | 'plasma' | 'grayscale';
+export type ScaleMode = 'linear' | 'logarithmic';
 
 export interface VisualizerSettings {
   fftSize: number;
@@ -7,6 +8,7 @@ export interface VisualizerSettings {
   maxDecibels: number;
   smoothingTimeConstant: number;
   colorScheme: ColorScheme;
+  scaleMode: ScaleMode;
   gain: number;
 }
 
