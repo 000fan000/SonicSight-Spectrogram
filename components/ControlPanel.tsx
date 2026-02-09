@@ -24,11 +24,11 @@ const ControlPanel: React.FC<Props> = ({
   onAnalyze,
   isAnalyzing
 }) => {
-  const fftSizes = [1024, 2048, 4096, 8192];
+  const fftSizes = [512, 1024, 2048, 4096, 8192, 16384];
 
   return (
-    <div className="flex flex-col gap-6 p-6 bg-zinc-900 border-white/10 md:border-l h-full overflow-y-auto">
-      <div className="hidden md:flex flex-col gap-1">
+    <div className="flex flex-col gap-6 p-6 bg-zinc-900 border-l border-white/10 w-80 shrink-0 overflow-y-auto">
+      <div className="flex flex-col gap-1">
         <h2 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
           <Icons.Activity className={`w-5 h-5 ${isActive ? 'text-indigo-500 animate-pulse' : 'text-zinc-600'}`} />
           SonicSight
@@ -39,7 +39,7 @@ const ControlPanel: React.FC<Props> = ({
       <div className="flex flex-col gap-3">
         <button
           onClick={onToggle}
-          className={`w-full py-3 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all active:scale-95 ${
+          className={`w-full py-3 px-4 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all active:scale-95 ${
             isActive 
               ? 'bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20' 
               : 'bg-indigo-600 text-white hover:bg-indigo-500 shadow-lg shadow-indigo-500/20'
@@ -52,7 +52,7 @@ const ControlPanel: React.FC<Props> = ({
         {isActive && (
           <button
             onClick={onTogglePause}
-            className="w-full py-2 px-4 rounded-lg text-xs font-bold border border-white/10 text-zinc-400 hover:text-zinc-200 transition-colors"
+            className="w-full py-2 px-4 rounded-lg text-xs font-medium border border-white/10 text-zinc-400 hover:text-zinc-200 hover:bg-white/5 transition-colors"
           >
             {isPaused ? 'Resume Rendering' : 'Pause Waterfall'}
           </button>
@@ -65,24 +65,24 @@ const ControlPanel: React.FC<Props> = ({
         <div className="space-y-4">
           <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-2">
             <Icons.Settings className="w-3 h-3" />
-            Signal Parameters
+            Core Parameters
           </label>
           
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div className="space-y-2">
               <div className="flex justify-between text-xs mono">
                 <span className="text-zinc-500">Frequency Scale</span>
-                <span className="text-indigo-400 uppercase tracking-tighter">{settings.scaleMode}</span>
+                <span className="text-indigo-400 uppercase">{settings.scaleMode}</span>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 {(['linear', 'logarithmic'] as ScaleMode[]).map((mode) => (
                   <button
                     key={mode}
                     onClick={() => onUpdateSettings({ scaleMode: mode })}
-                    className={`text-[10px] uppercase font-bold py-2.5 rounded-lg border transition-all ${
+                    className={`text-[10px] uppercase font-bold py-2 rounded border transition-all ${
                       settings.scaleMode === mode 
                         ? 'border-indigo-500 bg-indigo-500/10 text-indigo-400' 
-                        : 'border-white/5 bg-white/5 text-zinc-600'
+                        : 'border-white/5 bg-white/5 text-zinc-600 hover:text-zinc-400'
                     }`}
                   >
                     {mode}
@@ -96,15 +96,15 @@ const ControlPanel: React.FC<Props> = ({
                 <span className="text-zinc-500">Resolution (FFT)</span>
                 <span className="text-white">{settings.fftSize}</span>
               </div>
-              <div className="grid grid-cols-4 gap-1">
+              <div className="grid grid-cols-3 gap-1">
                 {fftSizes.map((size) => (
                   <button
                     key={size}
                     onClick={() => onUpdateSettings({ fftSize: size })}
-                    className={`text-[9px] font-bold py-2 rounded border transition-all ${
+                    className={`text-[9px] font-bold py-1.5 rounded border transition-all ${
                       settings.fftSize === size 
                         ? 'border-indigo-500 bg-indigo-500/10 text-indigo-400' 
-                        : 'border-white/5 bg-white/5 text-zinc-600'
+                        : 'border-white/5 bg-white/5 text-zinc-600 hover:text-zinc-400'
                     }`}
                   >
                     {size}
@@ -132,14 +132,14 @@ const ControlPanel: React.FC<Props> = ({
             <div className="space-y-2">
               <span className="text-[10px] text-zinc-500 font-bold uppercase">Thermal Mapping</span>
               <div className="grid grid-cols-3 gap-1">
-                {(['magma', 'viridis', 'plasma'] as ColorScheme[]).map((scheme) => (
+                {(['magma', 'viridis', 'inferno', 'plasma', 'grayscale'] as ColorScheme[]).map((scheme) => (
                   <button
                     key={scheme}
                     onClick={() => onUpdateSettings({ colorScheme: scheme })}
                     className={`text-[9px] uppercase font-bold py-2 rounded border transition-all ${
                       settings.colorScheme === scheme 
                         ? 'border-indigo-500 bg-indigo-500/10 text-indigo-400' 
-                        : 'border-white/5 bg-white/5 text-zinc-600'
+                        : 'border-white/5 bg-white/5 text-zinc-600 hover:text-zinc-400'
                     }`}
                   >
                     {scheme}
@@ -155,15 +155,18 @@ const ControlPanel: React.FC<Props> = ({
         <div className="space-y-3">
           <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-2">
             <Icons.Sparkles className="w-3 h-3 text-purple-400" />
-            Neural Analysis
+            AI Signature Analysis
           </label>
+          <p className="text-[11px] text-zinc-500 leading-tight">
+            Use Gemini to interpret harmonics, spectral density, and acoustic sources.
+          </p>
           <button
             onClick={onAnalyze}
             disabled={!isActive || isAnalyzing}
-            className={`w-full py-3 px-4 rounded-xl text-xs font-black flex items-center justify-center gap-2 transition-all ${
+            className={`w-full py-3 px-4 rounded-lg text-xs font-bold flex items-center justify-center gap-2 transition-all ${
               isAnalyzing 
                 ? 'bg-zinc-800 text-zinc-600 cursor-not-allowed'
-                : 'bg-gradient-to-br from-indigo-600 to-purple-700 text-white shadow-xl shadow-indigo-500/10 active:scale-[0.98]'
+                : 'bg-gradient-to-br from-indigo-600 to-purple-700 text-white hover:shadow-lg hover:shadow-indigo-500/20 active:scale-95'
             } disabled:opacity-50`}
           >
             {isAnalyzing ? (
@@ -171,16 +174,16 @@ const ControlPanel: React.FC<Props> = ({
             ) : (
               <Icons.Sparkles className="w-4 h-4" />
             )}
-            Analyze acoustics
+            Analyze Acoustics
           </button>
         </div>
       </div>
 
-      <div className="mt-auto pt-4 border-t border-white/5 text-[9px] text-zinc-600 mono flex justify-between items-center">
+      <div className="mt-auto pt-6 border-t border-white/5 text-[9px] text-zinc-600 mono flex justify-between items-center">
         <span>BUFF: {settings.fftSize / 2} BINS</span>
-        <div className="flex gap-2 items-center">
-          <span className="w-1.5 h-1.5 rounded-full bg-green-500/50 animate-pulse"></span>
-          <span>48.0kHz</span>
+        <div className="flex gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-green-500/50"></span>
+          <span>SR: 48.0kHz</span>
         </div>
       </div>
     </div>

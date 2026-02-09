@@ -41,8 +41,7 @@ const SpectrogramCanvas: React.FC<Props> = ({ analyser, settings, isPaused }) =>
   const bufferCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const requestRef = useRef<number>();
 
-  // Use a named function or provide the expected timestamp argument to avoid circularity or parameter count issues
-  const draw = useCallback((_timestamp: number) => {
+  const draw = useCallback(() => {
     if (!analyser || !canvasRef.current || isPaused) {
       requestRef.current = requestAnimationFrame(draw);
       return;
