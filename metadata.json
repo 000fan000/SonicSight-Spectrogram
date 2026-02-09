@@ -1,0 +1,7 @@
+{
+  "name": "SonicSight Spectrogram",
+  "description": "A high-fidelity real-time audio spectrogram visualizer that transforms sound into beautiful, detailed heatmaps. Capture and analyze acoustic patterns with professional-grade precision.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
