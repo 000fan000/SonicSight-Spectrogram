@@ -142,27 +142,27 @@ const SpectrogramCanvas: React.FC<Props> = ({ analyser, settings, isPaused }) =>
     : ['20k', '15k', '10k', '5k', '0'];
 
   return (
-    <div className="relative w-full h-full bg-black overflow-hidden rounded-xl border border-white/10 shadow-2xl group">
+    <div className="relative w-full h-full bg-black overflow-hidden rounded-lg lg:rounded-xl border border-white/10 shadow-2xl group">
       <canvas 
         ref={canvasRef} 
         className="w-full h-full block"
       />
       
-      <div className="absolute top-4 left-4 flex flex-col gap-2 pointer-events-none opacity-40 group-hover:opacity-100 transition-opacity">
-        <div className="bg-black/50 backdrop-blur-md px-3 py-1 rounded text-[10px] mono text-white/70 border border-white/5 uppercase tracking-widest">
+      <div className="absolute top-2 lg:top-4 left-2 lg:left-4 flex flex-col gap-1.5 lg:gap-2 pointer-events-none opacity-40 group-hover:opacity-100 transition-opacity">
+        <div className="bg-black/50 backdrop-blur-md px-2 lg:px-3 py-0.5 lg:py-1 rounded text-[8px] lg:text-[10px] mono text-white/70 border border-white/5 uppercase tracking-widest">
           {analyser ? '• Live Stream' : 'Ready'}
         </div>
-        <div className="bg-black/50 backdrop-blur-md px-3 py-1 rounded text-[10px] mono text-white/70 border border-white/5 uppercase tracking-widest">
+        <div className="bg-black/50 backdrop-blur-md px-2 lg:px-3 py-0.5 lg:py-1 rounded text-[8px] lg:text-[10px] mono text-white/70 border border-white/5 uppercase tracking-widest">
           {settings.scaleMode} Scale
         </div>
       </div>
       
-      <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between py-2 pl-2 pointer-events-none text-[9px] mono text-white/30">
+      <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between py-1.5 lg:py-2 pl-1.5 lg:pl-2 pointer-events-none text-[7px] lg:text-[9px] mono text-white/30">
         {labels.map(l => <span key={l}>{l}Hz</span>)}
       </div>
 
-      <div className="absolute right-4 bottom-4 pointer-events-none flex flex-col items-end">
-         <span className="text-[10px] mono text-white/20 uppercase tracking-tighter">SonicSight Engine v1.2</span>
+      <div className="absolute right-2 lg:right-4 bottom-2 lg:bottom-4 pointer-events-none flex flex-col items-end">
+         <span className="text-[8px] lg:text-[10px] mono text-white/20 uppercase tracking-tighter">SonicSight Engine v1.2</span>
       </div>
     </div>
   );

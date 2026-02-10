@@ -5,10 +5,17 @@
     background-color: #0a0a0a;
     color: #f5f5f5;
     overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 .mono {
     font-family: 'JetBrains Mono', monospace;
 }
 canvas {
     image-rendering: pixelated;
+}
+@media (max-width: 640px) {
+    body {
+        font-size: 14px;
+    }
 }
