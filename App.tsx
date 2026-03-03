@@ -43,17 +43,18 @@ const App: React.FC = () => {
     setSettings(prev => {
       const updated = { ...prev, ...newSettings };
       
-      // Some settings require a hardware/analyser restart
-      if (isActive && newSettings.fftSize !== undefined && newSettings.fftSize !== prev.fftSize) {
-        audioProcessor.stop();
-        startStream(updated);
-      } else if (newSettings.gain !== undefined) {
+      // Handle gain changes immediately (no restart needed)
+      if (newSettings.gain !== undefined) {
         audioProcessor.setGain(newSettings.gain);
       }
       
+      // Note: fftSize changes require a restart, but this must be done
+      // by the user explicitly to maintain Safari's user gesture requirement
+      // The audio will continue with previous fftSize until user restarts
+      
       return updated;
     });
-  }, [isActive, startStream]);
+  }, []);
 
   const handleCaptureAndAnalyze = async () => {
     if (!isActive) return;

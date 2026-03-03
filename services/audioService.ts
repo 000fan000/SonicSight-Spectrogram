@@ -7,24 +7,49 @@ export class AudioProcessor {
   private stream: MediaStream | null = null;
 
   async start(fftSize: number = 2048): Promise<void> {
-    if (!this.audioContext) {
-      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    try {
+      // Step 1: Request microphone access first (critical for Safari iOS)
+      // This must be triggered by a user gesture
+      this.stream = await navigator.mediaDevices.getUserMedia({ 
+        audio: { 
+          echoCancellation: false, 
+          noiseSuppression: false, 
+          autoGainControl: false 
+        }, 
+        video: false 
+      });
+      
+      // Step 2: Create AudioContext after obtaining media stream
+      // This ensures the context is created in a valid state
+      if (!this.audioContext) {
+        this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      }
+
+      // Step 3: Ensure AudioContext is running
+      // Safari requires this to be in response to a user gesture
+      if (this.audioContext.state === 'suspended') {
+        await this.audioContext.resume();
+      }
+
+      // Step 4: Create audio nodes
+      this.microphone = this.audioContext.createMediaStreamSource(this.stream);
+      this.analyser = this.audioContext.createAnalyser();
+      this.gainNode = this.audioContext.createGain();
+
+      // Step 5: Configure analyser
+      this.analyser.fftSize = fftSize;
+      this.analyser.smoothingTimeConstant = 0.8;
+
+      // Step 6: Connect audio graph
+      this.microphone.connect(this.gainNode);
+      this.gainNode.connect(this.analyser);
+      
+    } catch (error) {
+      console.error('Microphone access error:', error);
+      // Clean up any partially initialized resources
+      this.stop();
+      throw error;
     }
-
-    if (this.audioContext.state === 'suspended') {
-      await this.audioContext.resume();
-    }
-
-    this.stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-    this.microphone = this.audioContext.createMediaStreamSource(this.stream);
-    this.analyser = this.audioContext.createAnalyser();
-    this.gainNode = this.audioContext.createGain();
-
-    this.analyser.fftSize = fftSize;
-    this.analyser.smoothingTimeConstant = 0.8;
-
-    this.microphone.connect(this.gainNode);
-    this.gainNode.connect(this.analyser);
   }
 
   stop(): void {

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Icons } from '../constants';
 import { ColorScheme, VisualizerSettings, ScaleMode } from '../types';
 
@@ -24,7 +24,20 @@ const ControlPanel: React.FC<Props> = ({
   onAnalyze,
   isAnalyzing
 }) => {
+  const [fftChanged, setFftChanged] = useState(false);
+  const [currentFftSize, setCurrentFftSize] = useState(settings.fftSize);
+  
   const fftSizes = [512, 1024, 2048, 4096, 8192, 16384];
+  
+  // Detect FFT size changes
+  useEffect(() => {
+    if (isActive && settings.fftSize !== currentFftSize) {
+      setFftChanged(true);
+    } else {
+      setFftChanged(false);
+      setCurrentFftSize(settings.fftSize);
+    }
+  }, [settings.fftSize, currentFftSize, isActive]);
 
   return (
     <div className="flex flex-col gap-4 lg:gap-6 p-4 lg:p-6 bg-zinc-900 border-t lg:border-t-0 lg:border-l border-white/10 w-full lg:w-80 shrink-0 overflow-y-auto">
@@ -111,6 +124,20 @@ const ControlPanel: React.FC<Props> = ({
                   </button>
                 ))}
               </div>
+              
+              {fftChanged && (
+                <div className="mt-2 p-2 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+                  <div className="flex items-start gap-2">
+                    <Icons.AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="text-[9px] lg:text-[10px] text-amber-400 font-bold mb-1">Restart Required</p>
+                      <p className="text-[8px] lg:text-[9px] text-amber-300/80">
+                        FFT size changes require a stream restart. Please stop and restart the stream to apply changes.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="space-y-2">
